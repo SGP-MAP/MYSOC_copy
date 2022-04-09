@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface MaintainenceService {
     public MaintainenceDB saveDetails(MaintainenceDB mdb);
     public List<MaintainenceDB> getList();
-    public Optional<MaintainenceDB> getById(Long id);
+    public List<MaintainenceDB> getById(Long id);
     public boolean statusUpdate(MaintainenceDB obj);
     public List<MaintainenceDB> getRemaining();
     public long generateSequence(String seqName);

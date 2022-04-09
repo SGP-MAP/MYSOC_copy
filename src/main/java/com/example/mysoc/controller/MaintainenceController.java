@@ -3,6 +3,7 @@ package com.example.mysoc.controller;
 import com.example.mysoc.entity.MaintainenceDB;
 //import com.example.mysoc.entity.User;
 import com.example.mysoc.service.MaintainenceService;
+import com.sun.tools.javac.Main;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +36,7 @@ public class MaintainenceController {
     }
 
     @GetMapping("/getById/{uid}")
-    public Optional<MaintainenceDB> getById(@PathVariable("uid")Long id)
+    public List<MaintainenceDB> getById(@PathVariable("uid")Long id)
     {
        return maintainenceService.getById(id);
     }

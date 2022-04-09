@@ -36,8 +36,17 @@ public class MaintainenceImpl implements MaintainenceService {
     }
 
     @Override
-    public Optional<MaintainenceDB> getById(Long id) {
-        return maintainenceRepo.findById(id);
+    public List<MaintainenceDB> getById(Long id) {
+        List<MaintainenceDB> all=maintainenceRepo.findAll();
+        List<MaintainenceDB> ans=new ArrayList<>();
+        for(MaintainenceDB x:all)
+        {
+            if(x.getId()==id)
+            {
+                ans.add(x);
+            }
+        }
+        return ans;
     }
 
     @Override
