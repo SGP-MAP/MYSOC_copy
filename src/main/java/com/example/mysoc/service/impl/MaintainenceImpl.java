@@ -48,20 +48,20 @@ public class MaintainenceImpl implements MaintainenceService {
 
     @Override
     public boolean statusUpdate(MaintainenceDB obj) {
+        Long objid=obj.getId();
+        int objmonth=obj.getMonth();
+        boolean objstatus=obj.isStatus();
+        if(objstatus==true)
+        {
+            System.out.println("ye kya kar raha hai bhai tu");
+            return false;
+        }
         Query query=new Query();
-        Long oldid=obj.getId();
-        int mon=obj.getMonth();
-        boolean stat=obj.isStatus();
-
-//         query.addCriteria(where("id").is(oldid) && where("month").is(obj.getMonth()));
-            MaintainenceDB qobj=maintainenceRepo.getUserStatus(oldid,mon,stat);
-            if(qobj.isStatus()==true)
-            {
-                System.out.println("Kya kar raha hai bhai tu");
-                return false;
-            }
-            qobj.setStatus(true);
-            maintainenceRepo.save(qobj);
+        List<Criteria> criteria=new ArrayList<>();
+        criteria.add(Criteria.where("id").is(objid));
+        criteria.add(Criteria.where("month").is(objmonth));
+        query.addCriteria(new Criteria().andOperator(criteria.toArray((new Criteria[criteria.size()]))));
+        MaintainenceDB val=mongoOperations.findAndModify(query,new Update().set("status",true),MaintainenceDB.class);
             return true;
     }
 
