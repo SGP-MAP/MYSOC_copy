@@ -4,7 +4,7 @@ import com.example.mysoc.entity.MaintainenceDB;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 @Service
 public interface MaintainenceService {
     public MaintainenceDB saveDetails(MaintainenceDB mdb);
@@ -13,4 +13,5 @@ public interface MaintainenceService {
     public boolean statusUpdate(MaintainenceDB obj);
     public List<MaintainenceDB> getRemaining();
     public long generateSequence(String seqName);
+    public List<MaintainenceDB> getMonthly(String Month);
 }

@@ -46,27 +46,10 @@ public class MaintainenceController {
     {
         return maintainenceService.getRemaining();
     }
-}
-/*
 
-
-{
-    "id": 5,
-    "year": 2000,
-    "month": 2,
-    "paid_on": null,
-    "status": true,
-    "ammount": 777,
-    "fine": 0
+    @GetMapping("/geMonthly/{Month}")
+    public List<MaintainenceDB> getMonthly(@PathVariable("Month")String Month)
+    {
+        return maintainenceService.getMonthly(Month);
+    }
 }
-
-{
-    "id": 6,
-    "year": 1990,
-    "month": 0,
-    "paid_on": "1990-02-01T00:00:00.000+00:00",
-    "status": true,
-    "ammount": 777,
-    "fine": 0
-}
-* */

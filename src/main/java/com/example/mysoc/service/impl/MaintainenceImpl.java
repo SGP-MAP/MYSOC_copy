@@ -7,14 +7,13 @@ import com.example.mysoc.service.MaintainenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static org.springframework.data.mongodb.core.FindAndModifyOptions.options;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -27,7 +26,7 @@ public class MaintainenceImpl implements MaintainenceService {
 
     @Override
     public MaintainenceDB saveDetails(MaintainenceDB mdb) {
-        return  maintainenceRepo.save(mdb);
+        return maintainenceRepo.save(mdb);
     }
 
     @Override
@@ -37,12 +36,10 @@ public class MaintainenceImpl implements MaintainenceService {
 
     @Override
     public List<MaintainenceDB> getById(Long id) {
-        List<MaintainenceDB> all=maintainenceRepo.findAll();
-        List<MaintainenceDB> ans=new ArrayList<>();
-        for(MaintainenceDB x:all)
-        {
-            if(x.getId()==id)
-            {
+        List<MaintainenceDB> all = maintainenceRepo.findAll();
+        List<MaintainenceDB> ans = new ArrayList<>();
+        for (MaintainenceDB x : all) {
+            if (x.getId() == id) {
                 ans.add(x);
             }
         }
@@ -51,33 +48,72 @@ public class MaintainenceImpl implements MaintainenceService {
 
     @Override
     public boolean statusUpdate(MaintainenceDB obj) {
-        Optional<MaintainenceDB> oldobj=maintainenceRepo.findById(obj.getId());
-        if(oldobj!=null)
-        {
-            maintainenceRepo.save(obj);
+        Query query=new Query();
+        Long oldid=obj.getId();
+        int mon=obj.getMonth();
+        boolean stat=obj.isStatus();
+
+//         query.addCriteria(where("id").is(oldid) && where("month").is(obj.getMonth()));
+            MaintainenceDB qobj=maintainenceRepo.getUserStatus(oldid,mon,stat);
+            if(qobj.isStatus()==true)
+            {
+                System.out.println("Kya kar raha hai bhai tu");
+                return false;
+            }
+            qobj.setStatus(true);
+            maintainenceRepo.save(qobj);
             return true;
-        }
-        return false;
     }
 
     @Override
     public List<MaintainenceDB> getRemaining() {
-        List<MaintainenceDB> all=maintainenceRepo.findAll();
+        List<MaintainenceDB> all = maintainenceRepo.findAll();
         List<MaintainenceDB> ans = new ArrayList<>();
-        for(MaintainenceDB obj:all)
-        {
-            if(obj.isStatus()==false) {
+        for (MaintainenceDB obj : all) {
+            if (obj.isStatus() == false) {
                 ans.add(obj);
             }
         }
         return ans;
     }
+
     @Autowired
     private MongoOperations mongoOperations;
+
     @Override
     public long generateSequence(String seqName) {
-        MaintenenceSequencer counter=mongoOperations.findAndModify(Query.query(where("_id").is(seqName)),new
-                Update().inc("seq",1),options().returnNew(true).upsert(true),MaintenenceSequencer.class);
-        return !Objects.isNull(counter) ? counter.getSeq():1;
+        MaintenenceSequencer counter = mongoOperations.findAndModify(Query.query(where("_id").is(seqName)), new
+                Update().inc("seq", 1), options().returnNew(true).upsert(true), MaintenenceSequencer.class);
+        return !Objects.isNull(counter) ? counter.getSeq() : 1;
+    }
+
+    public HashMap<String, Integer> map = new HashMap<>();
+
+    public void updateMap() {
+        map.put("Jan", 1);
+        map.put("Feb", 2);
+        map.put("Mar", 3);
+        map.put("Apr", 4);
+        map.put("May", 5);
+        map.put("Jun", 6);
+        map.put("Jul", 7);
+        map.put("Aug", 8);
+        map.put("Sep", 9);
+        map.put("Oct", 10);
+        map.put("Nov", 11);
+        map.put("Dec", 12);
+    }
+    @Autowired
+    MongoTemplate mongoTemplate;
+    @Override
+    public List<MaintainenceDB> getMonthly(String Month) {
+        if (map.size() != 12) {
+            updateMap();
+        }
+        int m = map.get(Month);
+        Query query=new Query();
+        query.addCriteria(Criteria.where("month").is(m));
+        List<MaintainenceDB> ans=mongoTemplate.find(query,MaintainenceDB.class);
+        return ans;
     }
 }
