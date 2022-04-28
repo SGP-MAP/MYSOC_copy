@@ -8,22 +8,31 @@
         state: started
         
     - name: Copying setup folder
-      become: true 
+      become: false
       copy:
         src: ./setup
         dest: ./
-        owner: ssv
-        group: ssv
+        owner: manthan0112
+        group: manthan0112
         mode: 0777
+        
+    - name: Copying yml
+      become: false
+      copy:
+        src: ./docker-compose.yml
+        dest: ./
+        owner: manthan0112
+        group: manthan0112
+        mode: 0777
+        
     - name: Copying script file
-      become: true 
+      become: false
       copy:
         src: ./scriptfile.sh
         dest: ./
-        owner: ssv
-        group: ssv  
+        owner: manthan0112
+        group: manthan0112
         mode: 0777
-    - name : Run Docker compose
-      ansible.builtin.shell:
-    	cmd: ./scriptfile.sh
-
+        
+    - name: Run Docker compose
+      shell: ./scriptfile.sh
