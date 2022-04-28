@@ -1,1 +1,2 @@
-172.16.144.37 ansible_user=ssv
+[ubuntu18]
+172.16.131.116 ansible_user=manthan0112

@@ -1,9 +1,9 @@
 pipeline {
     environment {
-        registry1 = "sarika476/frontend"
-        registry2 = "sarika476/backend"
-        registry = "sarika476/final_project"
-        registryCredential = 'docker-login'
+        registry1 = "manthan0112/frontend"
+        registry2 = "manthan0112/backend"
+        registry = "manthan0112/final_project"
+        registryCredential = 'dockerhub_id'
         dockerImage = ''
     }
     agent any
@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Step 1: Git clone') {
             steps {
-                git 'https://github.com/sarika476/MYSOC.git'
+                git 'https://github.com/Manthan0112/MYSOC.git'
             }
         }
         stage('build frontend') {
